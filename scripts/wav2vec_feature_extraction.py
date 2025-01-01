@@ -1,4 +1,3 @@
-# wav2vec_feature_extraction.py
 from transformers import Wav2Vec2Processor, Wav2Vec2Model
 import torch
 import librosa
@@ -34,11 +33,14 @@ def extract_wav2vec_features(file_path):
 # Load preprocessed data
 df = pd.read_csv(data_path)
 
+# Group the dataset by emotion and limit to first 100 samples for each emotion
+df_limited = df.groupby('Emotions').head(50)
+
 # Iterate over dataset and extract Wav2Vec features
 features = []
 labels = []
 
-for i, row in tqdm(df.iterrows(), total=df.shape[0], desc="Extracting Wav2Vec features"):
+for i, row in tqdm(df_limited.iterrows(), total=df_limited.shape[0], desc="Extracting Wav2Vec features"):
     file_path = row['Path']
     emotion = row['Emotions']
     try:
