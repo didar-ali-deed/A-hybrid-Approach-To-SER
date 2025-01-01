@@ -1,0 +1,50 @@
+Instructions for Running the Speech Emotion Recognition (SER) System
+
+1. Dataset Preprocessing:
+   This system uses four datasets: RAVDESS, CREMA, TESS, and SAVEE. The data needs to be processed into a unified format before feature extraction.
+
+   To preprocess the data:
+   - Ensure that the datasets are correctly placed in the following directories:
+     - RAVDESS: "../data/ravdess/"
+     - CREMA: "../data/crema-d/AudioWAV/"
+     - TESS: "../data/tess/TESS Toronto emotional speech set data/"
+     - SAVEE: "../data/savee/ALL/"
+   - Run the script `process_datasets.py` to extract the emotions and file paths for each dataset and combine them into one CSV file (`combined_emotions.csv`).
+
+2. Feature Extraction with Wav2Vec2:
+   Once the data is preprocessed, the next step is to extract features from the audio files using the Wav2Vec2 model.
+
+   To extract features:
+   - Run the `wav2vec_feature_extraction.py` script to extract Wav2Vec2 features.
+   - The script processes the audio files listed in `combined_emotions.csv` and stores the extracted features in `wav2vec_features.csv`.
+   - Ensure that you have installed all necessary libraries (e.g., `transformers`, `librosa`, `torch`) before running this step.
+
+3. Model Training:
+   After feature extraction, the model can be trained using the Wav2Vec2 features. Only 50 voices per emotion are used for training.
+
+   To train the model:
+   - Run the `train_model.py` script.
+   - The script will load the features from `wav2vec_features.csv` and train a Transformer-based model to classify emotions based on these features.
+   - Training will be performed using the training dataset (80% of the data) and validated using the validation dataset (10% of the data). The final model is saved after training.
+   - The training process logs the training and validation losses as well as F1 scores to a log file (`training_log.txt`).
+
+4. Model Evaluation:
+   After training, you can evaluate the model on the test data (20% of the dataset).
+
+   To evaluate the model:
+   - Run the `evaluate_model.py` script.
+   - The script will compute the accuracy of the model on the test set and generate a confusion matrix, which will be saved as an image (`confusion_matrix.png`).
+
+Notes:
+- Before running the scripts, make sure all dependencies are installed.
+- The directory structure should be organized as follows:
+  - ../data/ravdess/
+  - ../data/crema-d/AudioWAV/
+  - ../data/tess/TESS Toronto emotional speech set data/
+  - ../data/savee/ALL/
+  - ../Preprocessed Data/
+  - ../Extracted Features/
+  - ../models/
+  - ../logs/
+  - ../results/
+- Ensure that the required model, `facebook/wav2vec2-base`, is available for downloading when running the feature extraction script.
